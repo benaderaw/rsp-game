@@ -1,6 +1,7 @@
 import random 
+import math
 
-PLAY_TO = 5
+PLAY_TO = 3
 
 winner_list = []
 picks = ["rock", "paper", "scissor"]
@@ -40,20 +41,26 @@ def winner_logic(user, opponent, user_pick, opponent_pick):
 
     # rock
     if user_pick == "rock" and opponent_pick == "paper":
+        print("😭 Your opponent has won this turn")
         return opponent
     if user_pick == "paper" and opponent_pick == "rock":
+        print("🎉 You have won this turn")
         return user
     
     # paper
     if user_pick == "paper" and opponent_pick == "scissor":
+        print("😭 Your opponent has won this turn")
         return opponent
     if user_pick == "scissor" and opponent_pick == "paper":
+        print("🎉 You have won this turn")
         return user
 
     # scissor
     if user_pick == "scissor" and opponent_pick == "rock":
+        print("😭 Your opponent has won this turn")
         return opponent
     if user_pick == "rock" and opponent_pick == "scissor":
+        print("🎉 You have won this turn")
         return user
     
     # draw
@@ -63,7 +70,7 @@ def winner_logic(user, opponent, user_pick, opponent_pick):
     
 
 
-def get_winner():
+def get_winner_per_turn():
     user_choice = get_user_choice()
     opponent_choice = get_random_pick()
     winner = winner_logic("user", "opponent", user_choice, opponent_choice)
@@ -76,15 +83,82 @@ def get_winner():
 
     return winner
 
-# starting point for app
-def main():
-    turn = 1
+
+# winner logic based on max turn plays
+def get_overall_winner():
+    print(winner_list)
+
+    user = 0
+    opponent = 0
+    draw = 0
+    turns = PLAY_TO # 3
+    winner_list_without_draw = []
     
-    while turn <= 5:
-        print(f"============ Turn {turn} ============")
-        winner = get_winner()
-        winner_list.append(winner)
-        turn += 1
+    
+
+    # check if it is all a draw
+    for winner in winner_list:
+        if winner == "draw":
+            draw += 1
+    
+    if draw == len(winner_list):
+       return ("🏁 This match was a DRAW 🏁")
+    
+    # loop thru winner_list and append winners to a list
+    # if its a draw don't append it
+    for winner in winner_list:
+        if winner != "draw":
+            if winner == "user":
+                user += 1
+            elif winner == "opponent":
+                opponent += 1
+            winner_list_without_draw.append(winner)
+        else:
+            turns -= 1
+
+    #  check if there is an overall winner or a draw
+    most_winner = int((len(winner_list_without_draw)/2) + 1) # 2
+    # print(len(winner_list_without_draw))
+    # print(xxx)
+    # print(user, opponent)
+    
+    if user == opponent:
+        return ("🏁 This match was a DRAW 🏁")
+    if user == most_winner:
+        return (f"🎉 You have WON this match with {user} out of {len(winner_list_without_draw)} wins 🎉")
+    if opponent == most_winner:
+        return (f"😭 You have LOST this match with {user} out of {len(winner_list_without_draw)} losses 😭")
+        
+
+        
+
+    
+
+    
+
+    
+
+    
+
+        
 
 
-main()
+
+# starting point for app
+def main(turn):
+    current_turn = 1
+
+    while current_turn <= turn:
+        print("")
+        print(f"============ Turn {current_turn} ============")
+        winner_per_turn = get_winner_per_turn()
+        winner_list.append(winner_per_turn)
+        current_turn += 1
+
+    print("")
+    print("============ Match over ============")
+    winner = get_overall_winner()
+    print(winner)
+
+
+main(PLAY_TO)
