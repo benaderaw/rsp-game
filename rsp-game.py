@@ -1,8 +1,6 @@
 import random 
 import math
 
-PLAY_TO = 3
-
 winner_list = []
 picks = ["rock", "paper", "scissor"]
 emoji = {
@@ -11,12 +9,68 @@ emoji = {
     "scissor": "✂️"
 }
 
+# return user input on how many turns to play
+def get_user_input_turns():
+    return input("Hou many turns would you like to play? ")
 
 # return user input
 def get_user_input():
     return input("Please pick rock, paper, or scissor: ").lower()
 
-# get user input and check it
+# if float 
+def is_float(value):
+    # check if a decimal
+    periods = 0
+    value_to_str = str(value)
+
+    if value_to_str.isdigit():
+        return False
+
+    for period in value_to_str:
+        if period == ".":
+            periods += 1
+
+
+    if periods > 1:
+        return ("You have too many periods")
+        return
+  
+    value_list = value_to_str.split(".")
+    xx = []
+
+    if value_list[0] == "":
+        value_list[0] = "0"\
+        
+    if value_list[len(value_list) - 1] == "":
+        value_list.remove("")
+    
+    for values in value_list:
+        if values.isdigit():
+            xx.append(True)
+
+    if len(xx) == len(value_list):
+        return True
+    else:
+        return False
+
+# get user input on turns and check if valid
+def get_user_turns():
+    while True:
+        turns = get_user_input_turns()
+        turns_is_float = is_float(turns)
+
+        if turns.isdigit():
+            turns = int(turns)
+            break
+        elif turns_is_float:
+            turns = math.ceil(float(turns))
+            break
+        else:
+            print("🔴 Please enter a number 🔴")
+    
+    return turns
+
+# get user input and check if valid
 def get_user_choice():
     while True:
         user_input = get_user_input()
@@ -91,7 +145,6 @@ def get_overall_winner():
     user = 0
     opponent = 0
     draw = 0
-    turns = PLAY_TO # 3
     winner_list_without_draw = []
     
     
@@ -113,8 +166,6 @@ def get_overall_winner():
             elif winner == "opponent":
                 opponent += 1
             winner_list_without_draw.append(winner)
-        else:
-            turns -= 1
 
     #  check if there is an overall winner or a draw
     most_winner = int((len(winner_list_without_draw)/2) + 1) # 2
@@ -127,10 +178,10 @@ def get_overall_winner():
     if user == most_winner:
         return (f"🎉 You have WON this match with {user} out of {len(winner_list_without_draw)} wins 🎉")
     if opponent == most_winner:
-        return (f"😭 You have LOST this match with {user} out of {len(winner_list_without_draw)} losses 😭")
+        return (f"😭 You have LOST this match with {user} out of {len(winner_list_without_draw)} wins 😭")
         
 
-        
+ 
 
     
 
@@ -145,10 +196,16 @@ def get_overall_winner():
 
 
 # starting point for app
-def main(turn):
+def main():
+    turns = get_user_turns()
     current_turn = 1
 
-    while current_turn <= turn:
+    print("========================================")
+    print("========== 🕹️ Match Started 🕹️ ===========")
+    print("========================================")
+
+
+    while current_turn <= turns:
         print("")
         print(f"============ Turn {current_turn} ============")
         winner_per_turn = get_winner_per_turn()
@@ -159,6 +216,7 @@ def main(turn):
     print("============ Match over ============")
     winner = get_overall_winner()
     print(winner)
+    
 
 
-main(PLAY_TO)
+main()
